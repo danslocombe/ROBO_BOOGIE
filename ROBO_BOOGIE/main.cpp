@@ -1,6 +1,8 @@
 #include <fmod.hpp>
 #include <iostream>
 #include <fmod_errors.h>
+#include <thread>
+#include <chrono>
 
 #include "AudioPlayer.h"
 
@@ -62,16 +64,37 @@ int main()
     std::cout << "Ok" << std::endl;
   
     std::cout << "Playing:" << std::endl;
-    result = sys->playSound(sound1, 0, false, &channel);
+    const bool paused = true;
+    result = sys->playSound(sound1, 0, paused, &channel);
     assert_result(result);
 
-    player = new AudioPlayer(sound1);
+    player = new AudioPlayer(sound1, channel);
     std::string error;
     result = player->Register(sys, error);
     assert_result(result);
   
+    /*
     for (;;)
     {
+        using namespace std::chrono_literals;
+        std::cout << player->GetOffset() << std::endl;
+        std::this_thread::sleep_for(500ms);
+    }
+    */
+    for (;;)
+    {
+        char line[100];
+        std::cin.getline(line, 100);
+        std::cout << player->GetOffset() << std::endl;
+
+        if (player->GetPlaying())
+        {
+            player->Pause();
+        }
+        else
+        {
+            player->Play();
+        }
     }
   
     return 0;

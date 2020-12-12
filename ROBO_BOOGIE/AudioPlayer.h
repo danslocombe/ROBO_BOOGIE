@@ -9,14 +9,35 @@ class AudioPlayer
 private:
 	RingBuffer m_ringBuffer;
 	FMOD::Sound* m_sound;
+	FMOD::System* m_sys;
+	FMOD::Channel* m_channel;
 	int m_offset;
 	double m_vel;
+	bool m_playing;
 	
 public:
-	AudioPlayer(FMOD::Sound* sound);
+	AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel);
 	//~AudioPlayer();
 
 	FMOD_RESULT Register(FMOD::System* sys, std::string& error);
+
+	int GetOffset() const
+	{
+		return m_offset;
+	}
+
+	double GetVel() const
+	{
+		return m_vel;
+	}
+
+	void Play();
+	void Pause();
+
+	bool GetPlaying() const
+	{
+		return m_playing;
+	}
 
 private:
 	FMOD::DSP* m_dsp;

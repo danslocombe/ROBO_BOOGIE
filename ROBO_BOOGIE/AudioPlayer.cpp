@@ -2,7 +2,7 @@
 
 constexpr size_t BUFFER_SIZE = 44100 * 4;
 
-AudioPlayer::AudioPlayer(FMOD::Sound* sound) : m_ringBuffer(BUFFER_SIZE), m_sound(sound)
+AudioPlayer::AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel) : m_ringBuffer(BUFFER_SIZE)
 {
     m_dsp = nullptr;
 
@@ -18,10 +18,27 @@ AudioPlayer::AudioPlayer(FMOD::Sound* sound) : m_ringBuffer(BUFFER_SIZE), m_soun
 
     m_offset = 0;
     m_vel = 0.0;
+    m_playing = false;
+    m_sound = sound;
+    m_channel = channel;
+}
+
+void AudioPlayer::Play()
+{
+    m_playing = true;
+    m_channel->setPaused(false);
+}
+
+void AudioPlayer::Pause()
+{
+    m_playing = false;
+    m_channel->setPaused(true);
 }
 
 FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, std::string& error)
 {
+    m_sys = sys;
+
     FMOD_RESULT result = sys->createDSP(&m_dspDescr, &m_dsp);
     if (result != FMOD_OK)
     {
@@ -58,34 +75,47 @@ FMOD_RESULT AudioPlayer::Callback(
     int inChannels,
     int* outChannels)
 {
-    for (uint32_t samp = 0; samp < length; samp++)
+    if (m_playing)
     {
-        // We want to record in mono so average over channels
-        float averagedSample = 0.0;
-        for (int chan = 0; chan < *outChannels; chan++)
-        {
-			const uint32_t offset = (samp * *outChannels) + chan;
-            float value = inbuffer[offset];// *1.f;
-            averagedSample += value / ((float)(*outChannels));
+		for (uint32_t samp = 0; samp < length; samp++)
+		{
+			// We want to record in mono so average over channels
+			float averagedSample = 0.0;
+			for (int chan = 0; chan < *outChannels; chan++)
+			{
+				const uint32_t offset = (samp * *outChannels) + chan;
+				float value = inbuffer[offset];// *1.f;
+				averagedSample += value / ((float)(*outChannels));
+			}
 
-            //outbuffer[offset] = value * 0.5 + m_ringBuffer.ReadOffset(100) * 0.5;
-            //outbuffer[offset] = value;
-        }
+			m_ringBuffer.Push(averagedSample);
+		}
 
-        m_ringBuffer.Push(averagedSample);
+		m_offset -= length;
     }
 
-    m_offset -= length;
     //m_vel = (m_vel + 1.0) / 4.0;
     double f_offset = m_offset;
 
     for (uint32_t i = 0; i < length; i++)
     {
-		constexpr double k = 30000.0;
-		m_vel = (m_vel * (k-1.0) + 1.0) / k;
-        //m_vel = 1.0;
+        if (m_playing)
+        {
+			constexpr double k = 30000.0;
+			m_vel = (m_vel * (k-1.0) + 1.0) / k;
+        }
+        else
+        {
+			constexpr double k = 30000.0;
+            m_vel = (m_vel * (k - 1.0)) / k;
+        }
+
         f_offset += m_vel;
-        //auto offset = m_offset + i * 
+        if (f_offset > 0.0)
+        {
+            f_offset = 0.0;
+        }
+
         // Do we need to interpolate?
         const float x = m_ringBuffer.ReadOffset((int)f_offset);
 		for (int chan = 0; chan < *outChannels; chan++)
