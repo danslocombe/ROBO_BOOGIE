@@ -54,7 +54,7 @@ int main()
     assert_result(result);
   
     std::cout << "Creating sound" << std::endl;
-    const std::string soundPath("C:\\users\\dan\\music\\diner2.wav");
+    const std::string soundPath("C:\\users\\dan\\music\\boom.wav");
     //const std::string soundPath("/home/pi/diner2.wav");
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
     assert_result(result);

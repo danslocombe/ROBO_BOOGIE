@@ -15,6 +15,9 @@ AudioPlayer::AudioPlayer(FMOD::Sound* sound) : m_ringBuffer(BUFFER_SIZE), m_soun
     m_dspDescr.numoutputbuffers = 1;
     m_dspDescr.read = DspStaticCallback; 
     m_dspDescr.userdata = nullptr;
+
+    m_offset = 0;
+    m_vel = 0.0;
 }
 
 FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, std::string& error)
@@ -72,11 +75,27 @@ FMOD_RESULT AudioPlayer::Callback(
         m_ringBuffer.Push(averagedSample);
     }
 
-    constexpr int baseOffset = -1024;
+    m_offset -= length;
+    //m_vel = (m_vel + 1.0) / 4.0;
+    double f_offset = m_offset;
+
     for (uint32_t i = 0; i < length; i++)
     {
-        m_ringBuffer.ReadOffset(baseOffset + i);
+		constexpr double k = 30000.0;
+		m_vel = (m_vel * (k-1.0) + 1.0) / k;
+        //m_vel = 1.0;
+        f_offset += m_vel;
+        //auto offset = m_offset + i * 
+        // Do we need to interpolate?
+        const float x = m_ringBuffer.ReadOffset((int)f_offset);
+		for (int chan = 0; chan < *outChannels; chan++)
+		{
+			const uint32_t offset = (i * *outChannels) + chan;
+            outbuffer[offset] = x;
+		}
     }
+
+	m_offset = (int)(f_offset);
 
     return FMOD_OK;
 }

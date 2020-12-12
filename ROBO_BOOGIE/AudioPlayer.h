@@ -9,6 +9,8 @@ class AudioPlayer
 private:
 	RingBuffer m_ringBuffer;
 	FMOD::Sound* m_sound;
+	int m_offset;
+	double m_vel;
 	
 public:
 	AudioPlayer(FMOD::Sound* sound);
