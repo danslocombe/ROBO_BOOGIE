@@ -1,4 +1,6 @@
 #include "AudioPlayer.h"
+#include <cstring>
+#include <string.h>
 
 constexpr size_t BUFFER_SIZE = 44100 * 4;
 
@@ -9,7 +11,7 @@ AudioPlayer::AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel) : m_ringBuf
 	// Do we need this?
     memset(&m_dspDescr, 0, sizeof(m_dspDescr));
     
-    strncpy_s(m_dspDescr.name, "Audio Player DSP", sizeof(m_dspDescr.name));
+    //strncpy_s(m_dspDescr.name, "Audio Player DSP", sizeof(m_dspDescr.name));
     m_dspDescr.version = 0x00010000;
     m_dspDescr.numinputbuffers = 1;
     m_dspDescr.numoutputbuffers = 1;

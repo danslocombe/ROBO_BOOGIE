@@ -3,6 +3,7 @@
 #include <fmod_errors.h>
 #include <thread>
 #include <chrono>
+#include <wiringPi.h>
 
 #include "AudioPlayer.h"
 
@@ -39,6 +40,9 @@ void loop()
 
 int main()
 {
+    wiringPiSetup();
+	  pinMode(0, INPUT);
+
     auto result = FMOD::System_Create(&sys);
     assert_result(result);
   
@@ -56,8 +60,9 @@ int main()
     assert_result(result);
   
     std::cout << "Creating sound" << std::endl;
-    const std::string soundPath("C:\\users\\dan\\music\\boom.wav");
+    //const std::string soundPath("C:\\users\\dan\\music\\boom.wav");
     //const std::string soundPath("/home/pi/diner2.wav");
+    const std::string soundPath("/home/pi/boom.wav");
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
     assert_result(result);
   
@@ -73,6 +78,18 @@ int main()
     result = player->Register(sys, error);
     assert_result(result);
   
+    for (;;)
+    {
+      delay(50);
+      const auto res = digitalRead(0);
+      std::cout << res << std::endl;
+      if (res) {
+          player->Play();
+      }
+      else {
+          player->Pause();
+      }
+    }
     /*
     for (;;)
     {
@@ -80,7 +97,6 @@ int main()
         std::cout << player->GetOffset() << std::endl;
         std::this_thread::sleep_for(500ms);
     }
-    */
     for (;;)
     {
         char line[100];
@@ -96,6 +112,7 @@ int main()
             player->Play();
         }
     }
+    */
   
     return 0;
   }

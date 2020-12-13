@@ -1,6 +1,7 @@
 #include "RingBuffer.h"
 #include <stdint.h>
 #include <cstdlib>
+#include <cstring>
 
 RingBuffer::RingBuffer(size_t bufferSize)
 {
