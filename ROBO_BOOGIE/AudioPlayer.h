@@ -14,6 +14,7 @@ private:
 	int m_offset;
 	double m_vel;
 	bool m_playing;
+	double m_vel_k = 30000.0;
 	
 public:
 	AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel);
@@ -29,6 +30,11 @@ public:
 	double GetVel() const
 	{
 		return m_vel;
+	}
+
+	void SetVelK(double k)
+	{
+		m_vel_k = k;
 	}
 
 	void Play();

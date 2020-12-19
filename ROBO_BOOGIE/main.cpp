@@ -3,7 +3,11 @@
 #include <fmod_errors.h>
 #include <thread>
 #include <chrono>
-#include <wiringPi.h>
+#ifdef PI 
+	#include "PiIO.h"
+#else
+	#include "DevIO.h"
+#endif
 
 #include "AudioPlayer.h"
 
@@ -40,8 +44,7 @@ void loop()
 
 int main()
 {
-    wiringPiSetup();
-	  pinMode(0, INPUT);
+    ioInit();
 
     auto result = FMOD::System_Create(&sys);
     assert_result(result);
@@ -60,9 +63,13 @@ int main()
     assert_result(result);
   
     std::cout << "Creating sound" << std::endl;
-    //const std::string soundPath("C:\\users\\dan\\music\\boom.wav");
-    //const std::string soundPath("/home/pi/diner2.wav");
+
+#ifdef PI
     const std::string soundPath("/home/pi/boom.wav");
+#else
+    const std::string soundPath("C:\\users\\dan\\music\\boom.wav");
+#endif
+
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
     assert_result(result);
   
@@ -77,13 +84,26 @@ int main()
     std::string error;
     result = player->Register(sys, error);
     assert_result(result);
+
+    bool toggle = true;
   
     for (;;)
     {
-      delay(50);
-      const auto res = digitalRead(0);
-      std::cout << res << std::endl;
-      if (res) {
+      ioDelay(50);
+      //const auto res = ioRead();
+      //std::cout << res << std::endl;
+	  char line[100];
+	  std::cin.getline(line, 100);
+
+	  toggle = !toggle;
+
+      const double d = std::atof(line);
+      if (d != 0.0)
+      {
+          player->SetVelK(d);
+      }
+
+      if (toggle) {
           player->Play();
       }
       else {

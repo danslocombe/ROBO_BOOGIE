@@ -96,20 +96,17 @@ FMOD_RESULT AudioPlayer::Callback(
 		m_offset -= length;
     }
 
-    //m_vel = (m_vel + 1.0) / 4.0;
     double f_offset = m_offset;
 
     for (uint32_t i = 0; i < length; i++)
     {
         if (m_playing)
         {
-			constexpr double k = 30000.0;
-			m_vel = (m_vel * (k-1.0) + 1.0) / k;
+			m_vel = (m_vel * (m_vel_k-1.0) + 1.0) / m_vel_k;
         }
         else
         {
-			constexpr double k = 30000.0;
-            m_vel = (m_vel * (k - 1.0)) / k;
+            m_vel = (m_vel * (m_vel_k - 1.0)) / m_vel_k;
         }
 
         f_offset += m_vel;
