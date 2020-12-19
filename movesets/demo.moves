@@ -1,6 +1,8 @@
 routine demo_0
 lid 1 med
-delay 1s
+#delay (2s,1.5s)
+delay (1s, 1.5s)
+arm (0.5, 0.8) med
 arm 1 med
 delay 500
 arm 0 med

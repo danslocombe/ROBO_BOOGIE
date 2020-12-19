@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClCompile Include="AudioPlayer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RoutineSet.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,7 +158,7 @@
   <ItemGroup>
     <ClInclude Include="AudioPlayer.h" />
     <ClInclude Include="DevIO.h" />
-    <ClInclude Include="Moveset.h" />
+    <ClInclude Include="RoutineSet.h" />
     <ClInclude Include="PiIO.h" />
     <ClInclude Include="RingBuffer.h" />
   </ItemGroup>

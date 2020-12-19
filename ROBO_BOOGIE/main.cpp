@@ -10,7 +10,9 @@
 #endif
 
 #include "AudioPlayer.h"
-#include "Moveset.h"
+#include "RoutineSet.h"
+#include <fstream>
+#include <sstream>
 
 void assert_result(FMOD_RESULT res, const std::string& str)
 {
@@ -43,7 +45,24 @@ void loop()
     assert_result(result);
 }
 
-int main()
+int main_parse()
+{
+    std::ifstream moveFile("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
+
+    std::string line;
+    std::vector<std::string> lines;
+    while (std::getline(moveFile, line))
+    {
+        lines.emplace_back(line);
+    }
+
+    RoutineSetParser parser;
+    const auto res = parser.ParseFile(lines);
+
+    return 0;
+}
+
+int main_audio()
 {
     ioInit();
 
@@ -68,7 +87,7 @@ int main()
 #ifdef PI
     const std::string soundPath("/home/pi/boom.wav");
 #else
-    const std::string soundPath("C:\\users\\dan\\music\\boom.wav");
+    const std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
 #endif
 
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
@@ -137,3 +156,9 @@ int main()
   
     return 0;
   }
+
+int main()
+{
+    //return main_audio();
+    return main_parse();
+}
