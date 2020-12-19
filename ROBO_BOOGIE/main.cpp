@@ -10,6 +10,7 @@
 #endif
 
 #include "AudioPlayer.h"
+#include "Moveset.h"
 
 void assert_result(FMOD_RESULT res, const std::string& str)
 {

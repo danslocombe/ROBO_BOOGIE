@@ -1,0 +1,19 @@
+routine demo_0
+lid 1 med
+delay 1s
+arm 1 med
+delay 500
+arm 0 med
+lid 0 fast
+
+routine demo_1
+lid 0.75 med
+delay 1s
+arm 0.5 slow
+delay 500
+arm 0 fast
+delay 1s
+arm 1 fast
+arm 0 fast
+lid 0 fast
+
