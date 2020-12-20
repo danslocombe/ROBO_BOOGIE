@@ -7,7 +7,9 @@
 
 void RoutineSet::Run()
 {
-    m_routines[m_currentRule].Run();
+    const auto& routine = m_routines[m_currentRule];
+    std::cout << "Running routine: " << routine.Name << std::endl;
+    routine.Run();
     m_currentRule = (m_currentRule + 1) % m_routines.size();
 }
 
