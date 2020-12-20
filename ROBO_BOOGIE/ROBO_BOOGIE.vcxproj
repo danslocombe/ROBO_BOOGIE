@@ -148,6 +148,7 @@
     <ClCompile Include="AudioPlayer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RoutineSet.cpp" />
+    <ClCompile Include="RoutineSetParser.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>

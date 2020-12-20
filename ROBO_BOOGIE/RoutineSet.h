@@ -13,6 +13,8 @@ struct RandRange
 struct Delay
 {
 	std::variant<int, RandRange> Ms;
+
+	void Run() const;
 };
 
 enum class MotorType
@@ -26,17 +28,22 @@ struct MotorMove
 	MotorType Motor;
 	double Pos;
 	double Vel;
+
+	void Run() const;
 };
 
 struct Move
 {
 	std::variant<Delay, MotorMove> _Move;
+	void Run() const;
 };
 
 struct Routine
 {
 	std::string Name;
 	std::vector<Move> Moves;
+
+	void Run() const;
 };
 
 class RoutineSet
@@ -48,7 +55,7 @@ public:
 	RoutineSet(std::vector<Routine> routines) : m_routines(std::move(routines))
 	{}
 
-	void Run() const;
+	void Run();
 };
 
 class RoutineSetParser

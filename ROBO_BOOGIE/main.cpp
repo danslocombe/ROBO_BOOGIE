@@ -45,23 +45,6 @@ void loop()
     assert_result(result);
 }
 
-int main_parse()
-{
-    std::ifstream moveFile("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
-
-    std::string line;
-    std::vector<std::string> lines;
-    while (std::getline(moveFile, line))
-    {
-        lines.emplace_back(line);
-    }
-
-    RoutineSetParser parser;
-    const auto res = parser.ParseFile(lines);
-
-    return 0;
-}
-
 int main_audio()
 {
     ioInit();
@@ -155,7 +138,25 @@ int main_audio()
     */
   
     return 0;
-  }
+}
+
+int main_parse()
+{
+    std::ifstream movesetFile("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
+
+    std::string line;
+    std::vector<std::string> lines;
+    while (std::getline(movesetFile, line))
+    {
+        lines.emplace_back(line);
+    }
+
+    RoutineSetParser parser;
+    auto res = parser.ParseFile(lines);
+    res.Run();
+
+    return 0;
+}
 
 int main()
 {

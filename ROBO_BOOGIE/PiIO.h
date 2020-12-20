@@ -16,3 +16,7 @@ inline bool ioRead()
 {
       return digitalRead(0) != 0;
 }
+
+inline void ioPwmWrite(int id, double value)
+{
+}
