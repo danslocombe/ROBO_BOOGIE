@@ -1,11 +1,39 @@
 #include "RoutineSet.h"
 #include <iostream>
+#include <cstring>
 
 struct Span
 {
     size_t Start;
     size_t End;
 };
+
+// Custom implementation for compatibility reasons
+bool startsWith(const std::string& s, const char* start, const size_t len)
+{
+  for (size_t i = 0; i < len; i++)
+  {
+    if (s[i] != start[i])
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool endsWith(const std::string& s, const char* end, const size_t len)
+{
+  for (size_t i = s.size() - len; i < s.size(); i++)
+  {
+    if (s[i] != end[i])
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 std::vector<Span> SplitSpaceSpans(const std::string& s)
 {
@@ -46,12 +74,12 @@ std::vector<std::string> SplitSpace(const std::string& s)
 std::optional<int> ParseDur(std::string durStr)
 {
     double mult = 1.0;
-    if (durStr.ends_with("ms"))
+    if (endsWith(durStr, "ms", 2))
     {
         // Keep mult at 1
         durStr.resize(durStr.size() - 2);
     }
-    else if (durStr.ends_with("s"))
+    else if (endsWith(durStr, "s", 1))
     {
         mult = 1000.0;
         durStr.resize(durStr.size() - 1);
@@ -61,7 +89,7 @@ std::optional<int> ParseDur(std::string durStr)
 
     if (delay == 0.0)
     {
-        std::cerr << "Could not parse duration: '" << durStr << "'";
+        std::cout << "Could not parse duration: '" << durStr << "'";
         return std::nullopt;
     }
 
@@ -77,7 +105,7 @@ std::optional<RandRange> ParseRandRange(std::string rangeStr)
 
     if (commaPos == std::string::npos)
     {
-        std::cerr << "Could not parse random range: '" << rangeStr << "'" << std::endl;
+        std::cout << "Could not parse random range: '" << rangeStr << "'" << std::endl;
         return std::nullopt;
     }
 
@@ -96,7 +124,7 @@ std::optional<RandRange> ParseRandRange(std::string rangeStr)
 
     if (second.value() <= first.value())
     {
-        std::cerr << "Range must be of the form (low, high). got '" << rangeStr << "'" << std::endl;
+        std::cout << "Range must be of the form (low, high). got '" << rangeStr << "'" << std::endl;
         return std::nullopt;
     }
 
@@ -195,7 +223,7 @@ std::optional<Move> ParseMove(const std::string& line)
 
             if (vel == 0.0)
             {
-                std::cerr << "Could not parse " << velStr << " in '" << line << "'" << std::endl;
+                std::cout << "Could not parse " << velStr << " in '" << line << "'" << std::endl;
                 return std::nullopt;
             }
         }
@@ -207,7 +235,7 @@ std::optional<Move> ParseMove(const std::string& line)
         return { Move { std::move(move) } };
     }
 
-    std::cerr << "Could not parse line '"  << line << "'" << std::endl;
+    std::cout << "Could not parse line '"  << line << "'" << std::endl;
     return std::nullopt;
 }
 
@@ -236,7 +264,7 @@ RoutineSet RoutineSetParser::ParseFile(const std::vector<std::string>& lines)
     {
         const auto& line = lines[i];
         constexpr const char *ROUTINE("routine");
-        if (line.starts_with(ROUTINE))
+        if (startsWith(line, ROUTINE, strlen(ROUTINE)))
         {
             if (i > 0)
             {

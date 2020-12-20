@@ -142,12 +142,21 @@ int main_audio()
 
 int main_parse()
 {
-    std::ifstream movesetFile("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
+#ifdef PI
+    const std::string path("/home/pi/ROBO_BOOGIE/movesets/demo.moves");
+#else
+    const std::string path("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
+#endif
+
+    std::cout << "Parsing " << path << std::endl;
+
+    std::ifstream movesetFile(path);
 
     std::string line;
     std::vector<std::string> lines;
     while (std::getline(movesetFile, line))
     {
+        std::cout << line << std::endl;
         lines.emplace_back(line);
     }
 
