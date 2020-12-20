@@ -35,6 +35,24 @@ bool endsWith(const std::string& s, const char* end, const size_t len)
   return true;
 }
 
+bool eq(const std::string& s, const char* cstring, const size_t len)
+{
+    if (s.size() != len)
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < len; i++)
+    {
+        if (s[i] != cstring[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 std::vector<Span> SplitSpaceSpans(const std::string& s)
 {
     size_t start = 0;
@@ -183,11 +201,11 @@ std::optional<Move> ParseMove(const std::string& line)
     constexpr const char* ARM("arm");
 
     const auto& command = splits[0];
-    if (command == DELAY)
+    if (eq(command, DELAY, strlen(DELAY)))
     {
         return ParseDelay(splits);
     }
-    else if (command == LID || command == ARM)
+    else if (eq(command, LID, strlen(LID)) || eq(command, ARM, strlen(LID)))
     {
         const auto motor = (command == LID)
             ? MotorType::Lid
@@ -204,15 +222,15 @@ std::optional<Move> ParseMove(const std::string& line)
         if (splits.size() > 2)
         {
             const auto& velStr = splits[2];
-            if (velStr == "slow")
+            if (eq(velStr, "slow", 4))
             {
                 vel = 0.25;
             }
-            else if (velStr == "med")
+            else if (eq(velStr, "med", 3))
             {
                 vel = 0.5;
             }
-            else if (velStr == "fast")
+            else if (eq(velStr, "fast", 4))
             {
                 vel = 1.0;
             }
