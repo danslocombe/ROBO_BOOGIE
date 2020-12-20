@@ -33,7 +33,7 @@ inline void trimEnd(std::string& s)
 {
     while (s.size() > 0)
     {
-        const char last = s[s.size()];
+        const char last = s[s.size() - 1];
         if (isspace(last))
         {
             s.resize(s.size() - 1);
