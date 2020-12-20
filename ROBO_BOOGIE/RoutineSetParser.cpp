@@ -1,4 +1,5 @@
 #include "RoutineSet.h"
+#include "StringCompat.h"
 #include <iostream>
 #include <cstring>
 
@@ -7,33 +8,6 @@ struct Span
     size_t Start;
     size_t End;
 };
-
-// Custom implementation for compatibility reasons
-bool startsWith(const std::string& s, const char* start, const size_t len)
-{
-  for (size_t i = 0; i < len; i++)
-  {
-    if (s[i] != start[i])
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-bool endsWith(const std::string& s, const char* end, const size_t len)
-{
-  for (size_t i = s.size() - len; i < s.size(); i++)
-  {
-    if (s[i] != end[i])
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
 
 std::vector<Span> SplitSpaceSpans(const std::string& s)
 {
