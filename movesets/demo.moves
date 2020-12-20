@@ -1,19 +1,24 @@
-routine demo_0
+routine standard
 lid 1 med
-delay (1s, 1.5s)
+delay (0.5s, 2.0s)
 arm 1 med
-delay 500
+delay 200
 arm 0 med
+delay 200
 lid 0 fast
 
-routine demo_1
+routine tenatative_fast
 lid 0.75 med
-delay 1s
+delay (1s, 2s)
+arm 0.4 slow
 arm 0.5 slow
-delay 500
+arm 0.65 slow
+delay (1s, 2s)
 arm 0 fast
+delay (400ms, 600ms)
+arm 1 fast
 delay 1s
 arm 1 fast
-arm 0 fast
 lid 0 fast
+arm 0 fast
 

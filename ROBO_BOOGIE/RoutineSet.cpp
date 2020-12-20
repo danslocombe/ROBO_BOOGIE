@@ -53,5 +53,7 @@ void MotorMove::Run() const
 {
     const int id = this->Motor == MotorType::Arm ? 0 : 1;
     ioPwmWrite(id, this->Pos);
+    const int delayMs = (int)(100.0 + (1.0 - this->Vel) * 200.0);
+    ioDelay(delayMs);
 }
 

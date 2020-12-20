@@ -12,9 +12,9 @@
 #include "StringCompat.h"
 
 #ifdef PI 
-	#include "PiIO.h"
+    #include "PiIO.h"
 #else
-	#include "DevIO.h"
+    #include "DevIO.h"
 #endif
 
 void assert_result(FMOD_RESULT res, const std::string& str)
@@ -48,7 +48,7 @@ void loop()
     assert_result(result);
 }
 
-int main_audio()
+int main_audio(RoutineSet routineSet)
 {
     ioInit();
 
@@ -96,54 +96,25 @@ int main_audio()
     for (;;)
     {
       ioDelay(50);
-      //const auto res = ioRead();
-      //std::cout << res << std::endl;
-	  char line[100];
-	  std::cin.getline(line, 100);
 
-	  toggle = !toggle;
+      if (ioRead()) {
+          if (!player->IsPlaying())
+          {
+              // TODO set a random speedup.
+              player->Play();
+          }
 
-      const double d = std::atof(line);
-      if (d != 0.0)
-      {
-          player->SetVelK(d);
-      }
-
-      if (toggle) {
-          player->Play();
+          routineSet.Run();
       }
       else {
           player->Pause();
       }
     }
-    /*
-    for (;;)
-    {
-        using namespace std::chrono_literals;
-        std::cout << player->GetOffset() << std::endl;
-        std::this_thread::sleep_for(500ms);
-    }
-    for (;;)
-    {
-        char line[100];
-        std::cin.getline(line, 100);
-        std::cout << player->GetOffset() << std::endl;
-
-        if (player->GetPlaying())
-        {
-            player->Pause();
-        }
-        else
-        {
-            player->Play();
-        }
-    }
-    */
   
     return 0;
 }
 
-int main_parse()
+RoutineSet parse()
 {
 #ifdef PI
     const std::string path("/home/pi/ROBO_BOOGIE/movesets/demo.moves");
@@ -165,14 +136,11 @@ int main_parse()
     }
 
     RoutineSetParser parser;
-    auto res = parser.ParseFile(lines);
-    res.Run();
-
-    return 0;
+    return parser.ParseFile(lines);
 }
 
 int main()
 {
-    //return main_audio();
-    return main_parse();
+    auto routineSet = parse();
+    return main_audio(routineSet);
 }

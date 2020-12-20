@@ -40,7 +40,7 @@ public:
     void Play();
     void Pause();
 
-    bool GetPlaying() const
+    bool IsPlaying() const
     {
         return m_playing;
     }

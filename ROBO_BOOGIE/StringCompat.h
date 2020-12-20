@@ -18,15 +18,16 @@ inline bool startsWith(const std::string& s, const char* start, const size_t len
 
 inline bool endsWith(const std::string& s, const char* end, const size_t len)
 {
-  for (size_t i = s.size() - len; i < s.size(); i++)
-  {
-    if (s[i] != end[i])
+    const size_t offset = s.size() - len;
+    for (size_t i = 0; i < len; i++)
     {
-      return false;
+        if (s[offset + i] != end[i])
+        {
+          return false;
+        }
     }
-  }
 
-  return true;
+    return true;
 }
 
 inline void trimEnd(std::string& s)
