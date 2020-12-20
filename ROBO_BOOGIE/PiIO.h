@@ -4,17 +4,17 @@
 inline void ioInit()
 {
     wiringPiSetup();
-	pinMode(0, INPUT);
+    pinMode(0, INPUT);
 }
 
 inline void ioDelay(int x)
 {
-      delay(50);
+    delay(50);
 }
 
 inline bool ioRead()
 {
-      return digitalRead(0) != 0;
+    return digitalRead(0) != 0;
 }
 
 inline void ioPwmWrite(int id, double value)

@@ -6,60 +6,60 @@
 
 struct RandRange
 {
-	int Low;
-	int High;
+    int Low;
+    int High;
 };
 
 struct Delay
 {
-	std::variant<int, RandRange> Ms;
+    std::variant<int, RandRange> Ms;
 
-	void Run() const;
+    void Run() const;
 };
 
 enum class MotorType
 {
-	Lid,
-	Arm,
+    Lid,
+    Arm,
 };
 
 struct MotorMove
 {
-	MotorType Motor;
-	double Pos;
-	double Vel;
+    MotorType Motor;
+    double Pos;
+    double Vel;
 
-	void Run() const;
+    void Run() const;
 };
 
 struct Move
 {
-	std::variant<Delay, MotorMove> _Move;
-	void Run() const;
+    std::variant<Delay, MotorMove> _Move;
+    void Run() const;
 };
 
 struct Routine
 {
-	std::string Name;
-	std::vector<Move> Moves;
+    std::string Name;
+    std::vector<Move> Moves;
 
-	void Run() const;
+    void Run() const;
 };
 
 class RoutineSet
 {
-	int m_currentRule = 0;
-	std::vector<Routine> m_routines;
+    int m_currentRule = 0;
+    std::vector<Routine> m_routines;
 
 public:
-	RoutineSet(std::vector<Routine> routines) : m_routines(std::move(routines))
-	{}
+    RoutineSet(std::vector<Routine> routines) : m_routines(std::move(routines))
+    {}
 
-	void Run();
+    void Run();
 };
 
 class RoutineSetParser
 {
 public:
-	RoutineSet ParseFile(const std::vector<std::string>& lines);
+    RoutineSet ParseFile(const std::vector<std::string>& lines);
 };

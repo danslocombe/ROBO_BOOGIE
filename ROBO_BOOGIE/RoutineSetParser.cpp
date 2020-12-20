@@ -43,24 +43,6 @@ std::vector<std::string> SplitSpace(const std::string& s)
     return splits;
 }
 
-/*
-std::vector<std::string> SplitSpace(const std::string& s)
-{
-    size_t start = 0;
-    size_t off = 0;
-    std::vector<std::string> splits;
-    do
-    {
-        off = s.find(' ', off + 1);
-        auto split = s.substr(start, std::min(off - start, s.size() - start));
-        start = off + 1;
-        splits.emplace_back(std::move(split));
-    } while (off != std::string::npos);
-
-    return splits;
-}
-*/
-
 std::optional<int> ParseDur(std::string durStr)
 {
     double mult = 1.0;
@@ -246,7 +228,6 @@ Routine ParseRoutine(std::string name, const std::vector<std::string>& lines, in
 
 RoutineSet RoutineSetParser::ParseFile(const std::vector<std::string>& lines)
 {
-    //for (const auto& line : lines)
     std::vector<Routine> routines;
     std::string curName;
     int start = 0;

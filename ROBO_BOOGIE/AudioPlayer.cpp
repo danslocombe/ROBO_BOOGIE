@@ -8,7 +8,7 @@ AudioPlayer::AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel) : m_ringBuf
 {
     m_dsp = nullptr;
 
-	// Do we need this?
+    // Do we need this?
     memset(&m_dspDescr, 0, sizeof(m_dspDescr));
     
     //strncpy_s(m_dspDescr.name, "Audio Player DSP", sizeof(m_dspDescr.name));
@@ -79,21 +79,21 @@ FMOD_RESULT AudioPlayer::Callback(
 {
     if (m_playing)
     {
-		for (uint32_t samp = 0; samp < length; samp++)
-		{
-			// We want to record in mono so average over channels
-			float averagedSample = 0.0;
-			for (int chan = 0; chan < *outChannels; chan++)
-			{
-				const uint32_t offset = (samp * *outChannels) + chan;
-				float value = inbuffer[offset];// *1.f;
-				averagedSample += value / ((float)(*outChannels));
-			}
+        for (uint32_t samp = 0; samp < length; samp++)
+        {
+            // We want to record in mono so average over channels
+            float averagedSample = 0.0;
+            for (int chan = 0; chan < *outChannels; chan++)
+            {
+                const uint32_t offset = (samp * *outChannels) + chan;
+                float value = inbuffer[offset];// *1.f;
+                averagedSample += value / ((float)(*outChannels));
+            }
 
-			m_ringBuffer.Push(averagedSample);
-		}
+            m_ringBuffer.Push(averagedSample);
+        }
 
-		m_offset -= length;
+        m_offset -= length;
     }
 
     double f_offset = m_offset;
@@ -102,7 +102,7 @@ FMOD_RESULT AudioPlayer::Callback(
     {
         if (m_playing)
         {
-			m_vel = (m_vel * (m_vel_k-1.0) + 1.0) / m_vel_k;
+            m_vel = (m_vel * (m_vel_k-1.0) + 1.0) / m_vel_k;
         }
         else
         {
@@ -117,14 +117,14 @@ FMOD_RESULT AudioPlayer::Callback(
 
         // Do we need to interpolate?
         const float x = m_ringBuffer.ReadOffset((int)f_offset);
-		for (int chan = 0; chan < *outChannels; chan++)
-		{
-			const uint32_t offset = (i * *outChannels) + chan;
+        for (int chan = 0; chan < *outChannels; chan++)
+        {
+            const uint32_t offset = (i * *outChannels) + chan;
             outbuffer[offset] = x;
-		}
+        }
     }
 
-	m_offset = (int)(f_offset);
+    m_offset = (int)(f_offset);
 
     return FMOD_OK;
 }
