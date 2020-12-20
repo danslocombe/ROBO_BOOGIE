@@ -1,4 +1,5 @@
 #include "RoutineSet.h"
+#include "StringCompat.h"
 #include <iostream>
 #include <cstring>
 
@@ -7,51 +8,6 @@ struct Span
     size_t Start;
     size_t End;
 };
-
-// Custom implementation for compatibility reasons
-bool startsWith(const std::string& s, const char* start, const size_t len)
-{
-  for (size_t i = 0; i < len; i++)
-  {
-    if (s[i] != start[i])
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-bool endsWith(const std::string& s, const char* end, const size_t len)
-{
-  for (size_t i = s.size() - len; i < s.size(); i++)
-  {
-    if (s[i] != end[i])
-    {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-bool eq(const std::string& s, const char* cstring, const size_t len)
-{
-    if (s.size() != len)
-    {
-        return false;
-    }
-
-    for (size_t i = 0; i < len; i++)
-    {
-        if (s[i] != cstring[i])
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 std::vector<Span> SplitSpaceSpans(const std::string& s)
 {
@@ -201,11 +157,11 @@ std::optional<Move> ParseMove(const std::string& line)
     constexpr const char* ARM("arm");
 
     const auto& command = splits[0];
-    if (eq(command, DELAY, strlen(DELAY)))
+    if (command == DELAY)
     {
         return ParseDelay(splits);
     }
-    else if (eq(command, LID, strlen(LID)) || eq(command, ARM, strlen(LID)))
+    else if ((command == LID) || (command == ARM))
     {
         const auto motor = (command == LID)
             ? MotorType::Lid
@@ -222,15 +178,15 @@ std::optional<Move> ParseMove(const std::string& line)
         if (splits.size() > 2)
         {
             const auto& velStr = splits[2];
-            if (eq(velStr, "slow", 4))
+            if (velStr == "slow")
             {
                 vel = 0.25;
             }
-            else if (eq(velStr, "med", 3))
+            else if (velStr == "med")
             {
                 vel = 0.5;
             }
-            else if (eq(velStr, "fast", 4))
+            else if (velStr == "fast")
             {
                 vel = 1.0;
             }

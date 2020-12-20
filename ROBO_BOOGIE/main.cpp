@@ -3,16 +3,19 @@
 #include <fmod_errors.h>
 #include <thread>
 #include <chrono>
+
+#include <fstream>
+#include <sstream>
+
+#include "AudioPlayer.h"
+#include "RoutineSet.h"
+#include "StringCompat.h"
+
 #ifdef PI 
 	#include "PiIO.h"
 #else
 	#include "DevIO.h"
 #endif
-
-#include "AudioPlayer.h"
-#include "RoutineSet.h"
-#include <fstream>
-#include <sstream>
 
 void assert_result(FMOD_RESULT res, const std::string& str)
 {
@@ -156,6 +159,7 @@ int main_parse()
     std::vector<std::string> lines;
     while (std::getline(movesetFile, line))
     {
+        trimEnd(line);
         std::cout << line << std::endl;
         lines.emplace_back(line);
     }

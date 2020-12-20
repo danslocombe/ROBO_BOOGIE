@@ -162,6 +162,7 @@
     <ClInclude Include="RoutineSet.h" />
     <ClInclude Include="PiIO.h" />
     <ClInclude Include="RingBuffer.h" />
+    <ClInclude Include="StringCompat.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
