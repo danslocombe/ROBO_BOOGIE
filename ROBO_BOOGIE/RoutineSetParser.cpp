@@ -243,7 +243,10 @@ RoutineSet RoutineSetParser::ParseFile(const std::vector<std::string>& lines)
             if (i > 0)
             {
                 auto routine = ParseRoutine(curName, lines, start + 1, i-1);
-                routines.emplace_back(std::move(routine));
+                if (routine.Moves.size() > 0)
+                {
+                    routines.emplace_back(std::move(routine));
+                }
             }
 
             curName = line.substr(strlen(ROUTINE) + 1);

@@ -51,6 +51,9 @@ void loop()
 int main_audio(RoutineSet routineSet)
 {
     ioInit();
+    // Reset positions
+    //ioPwmWrite(0, 0.0);
+    //ioPwmWrite(1, 0.0);
 
     auto result = FMOD::System_Create(&sys);
     assert_result(result);
@@ -105,6 +108,7 @@ int main_audio(RoutineSet routineSet)
           }
 
           routineSet.Run();
+          player->Pause();
       }
       else {
           player->Pause();
