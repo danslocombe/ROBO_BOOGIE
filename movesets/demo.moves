@@ -4,27 +4,70 @@
 #delay 3s
 #arm 0 med
 #delay 3s
+
+####
+routine peek
+####
+delay (1s, 2s)
+lid 0.4 fast
+delay (2s, 3s)
+lid 0 fast
+delay (2s, 5s)
+lid 0.4 fast
+delay (2s, 3s)
+lid 0.6 fast
+delay (1s, 1.5s)
+lid 0 fast
+delay (2.5s, 5s)
+lid 0.2 fast
+delay 500ms
+lid 1 fast
+arm 1 1.75
+arm 0 med
+lid 0 med
+
+####
+routine slow_open
+####
+delay (4s, 5s)
+lid 0.2 slow
+delay (200ms, 500ms)
+lid 0.4 slow
+delay (1s, 2s)
+lid 0.6 slow
+delay (10ms, 200ms)
+lid 0.8 slow
+delay (200ms, 500ms)
+lid 1 slow
+delay (1s, 2s)
+arm 1 1.75
+arm 0 med
+lid 0 med
+
+####
+routine standard
+####
+delay (1s, 20s)
+lid 1 med
+arm 1 1.75
+arm 0 med
+lid 0 med
+
+####
 routine tenatative_fast
+####
+delay (1s, 20s)
 lid 0.75 med
 delay (500ms, 1500ms)
-arm 0.4 slow
-arm 0.5 slow
-arm 0.65 slow
+arm 0.4 med
+delay (200ms, 300ms)
+arm 0.5 med
+delay (200ms, 300ms)
+arm 0.65 med
 delay (500ms, 1500ms)
-arm 0 fast
-delay (400ms, 1500ms)
-arm 1 fast
-delay 200ms
-arm 0 fast
-delay 150ms
+lid 1 5
+arm 1 3.3
+arm 0 4
+#delay 150ms
 lid 0 fast
-
-routine standard
-lid 1 med
-delay (0.5s, 2.0s)
-arm 1 med
-delay 200
-arm 0 med
-delay 200
-lid 0 fast
-
+#

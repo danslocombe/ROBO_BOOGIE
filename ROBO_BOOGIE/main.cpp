@@ -11,10 +11,10 @@
 #include "RoutineSet.h"
 #include "StringCompat.h"
 
-bool switchEnabled;
 #ifdef PI 
     #include "PiIO.h"
 #else
+bool switchEnabled;
     #include "DevIO.h"
 #endif
 
@@ -50,7 +50,7 @@ void loop()
     assert_result(result);
 }
 
-int main_audio(RoutineSet routineSet)
+int main_audio(RoutineSet routineSet, const std::string& soundPath)
 {
     ioInit();
 
@@ -71,12 +71,6 @@ int main_audio(RoutineSet routineSet)
     assert_result(result);
   
     std::cout << "Creating sound" << std::endl;
-
-#ifdef PI
-    const std::string soundPath("/home/pi/boom.wav");
-#else
-    const std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
-#endif
 
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
     assert_result(result);
@@ -133,12 +127,12 @@ int main_audio(RoutineSet routineSet)
 RoutineSet parse()
 {
 #ifdef PI
-    const std::string path("/home/pi/ROBO_BOOGIE/movesets/demo.moves");
+    std::string path("/home/pi/ROBO_BOOGIE/movesets/demo.moves");
 #else
-    const std::string path("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
+    std::string path("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\demo.moves");
 #endif
 
-    std::cout << "Parsing " << path << std::endl;
+    std::cout << "Input moveset:  " << path << std::endl;
 
     std::ifstream movesetFile(path);
 
@@ -147,7 +141,6 @@ RoutineSet parse()
     while (std::getline(movesetFile, line))
     {
         trimEnd(line);
-        std::cout << line << std::endl;
         lines.emplace_back(line);
     }
 
@@ -155,8 +148,19 @@ RoutineSet parse()
     return parser.ParseFile(lines);
 }
 
-int main()
+int main(int argc, char** argv)
 {
+#ifdef PI
+    std::string soundPath("/home/pi/boom.wav");
+#else
+    std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
+#endif
+
+    if (argc > 1)
+    {
+        soundPath = std::string(argv[1]);
+    }
+
     auto routineSet = parse();
-    return main_audio(routineSet);
+    return main_audio(routineSet, soundPath);
 }

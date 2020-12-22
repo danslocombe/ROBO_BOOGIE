@@ -180,15 +180,15 @@ std::optional<Move> ParseMove(const std::string& line)
             const auto& velStr = splits[2];
             if (velStr == "slow")
             {
-                vel = 0.25;
+                vel = 1.0;
             }
             else if (velStr == "med")
             {
-                vel = 0.5;
+                vel = 2.0;
             }
             else if (velStr == "fast")
             {
-                vel = 1.0;
+                vel = 4.0;
             }
             else
             {

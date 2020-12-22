@@ -8,8 +8,6 @@ constexpr int pinSwitch = 0;
 constexpr int pinArm = 1;
 constexpr int pinLid = 23;
 
-extern bool switchEnabled;
-
 inline void ioDelay(int x)
 {
     std::cout << "delay: " << x << std::endl;
@@ -18,21 +16,12 @@ inline void ioDelay(int x)
 
 inline bool ioRead()
 {
-    /*
     delay(50);
-    return digitalRead(pinSwitch) == 0;
-    */
-    std::cout << "reading" << std::endl;
-    return switchEnabled;
+    return digitalRead(pinSwitch) != 0;
 }
 
 inline bool ioReadBlock()
 {
-    // While fixing actual switch we are gonna lean on std::in 
-    std::cout << "blocking for read" << std::endl;
-    char line[100];
-    std::cin.getline(line, 100);
-    switchEnabled = line[0] == 'y';
     return ioRead();
 }
 
@@ -85,16 +74,15 @@ inline void ioPwmStop(MotorType id)
 
 inline void ioInit()
 {
-    switchEnabled = false;
     wiringPiSetup();
     pinMode(pinSwitch, INPUT);
 
     pinMode(pinArm, OUTPUT);
     pinMode(pinLid, OUTPUT);
-    ioPwmWrite(0, 0.0);
-    ioPwmStop(0);
-    ioPwmWrite(1, 0.0);
-    ioPwmStop(1);
+    ioPwmWrite(MotorType::Arm, 0.0);
+    ioPwmStop(MotorType::Arm);
+    ioPwmWrite(MotorType::Lid, 0.0);
+    ioPwmStop(MotorType::Lid);
 
     std::cout << "WiringPi Setup" << std::endl;
 }
