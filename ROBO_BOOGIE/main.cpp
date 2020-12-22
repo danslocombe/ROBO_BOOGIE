@@ -11,10 +11,10 @@
 #include "RoutineSet.h"
 #include "StringCompat.h"
 
+bool switchEnabled;
 #ifdef PI 
     #include "PiIO.h"
 #else
-bool switchEnabled;
     #include "DevIO.h"
 #endif
 
