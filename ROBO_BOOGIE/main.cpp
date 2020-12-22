@@ -14,8 +14,10 @@
 #ifdef PI 
     #include "PiIO.h"
 #else
+bool switchEnabled;
     #include "DevIO.h"
 #endif
+
 
 void assert_result(FMOD_RESULT res, const std::string& str)
 {
@@ -51,9 +53,6 @@ void loop()
 int main_audio(RoutineSet routineSet)
 {
     ioInit();
-    // Reset positions
-    //ioPwmWrite(0, 0.0);
-    //ioPwmWrite(1, 0.0);
 
     auto result = FMOD::System_Create(&sys);
     assert_result(result);
@@ -82,9 +81,8 @@ int main_audio(RoutineSet routineSet)
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
     assert_result(result);
   
-    std::cout << "Ok" << std::endl;
-  
-    std::cout << "Playing:" << std::endl;
+    std::cout << "Loading Ok!" << std::endl;
+
     const bool paused = true;
     result = sys->playSound(sound1, 0, paused, &channel);
     assert_result(result);
@@ -95,24 +93,38 @@ int main_audio(RoutineSet routineSet)
     assert_result(result);
 
     bool toggle = true;
-  
+    Routine* routine = nullptr;
+    bool switchEnabled = false;
+
     for (;;)
     {
-      ioDelay(50);
+        if (routine != nullptr && routine->Run())
+        {
+            switchEnabled = ioRead();
+        }
+        else
+        {
+            routine = nullptr;
 
-      if (ioRead()) {
-          if (!player->IsPlaying())
-          {
-              // TODO set a random speedup.
-              player->Play();
-          }
+            ioDelay(50);
+            switchEnabled = ioReadBlock();
 
-          routineSet.Run();
-          player->Pause();
-      }
-      else {
-          player->Pause();
-      }
+            if (switchEnabled)
+            {
+                routine = routineSet.GetRoutineIncrement();
+                std::cout << "Loaded routine: " << routine->Name << std::endl;
+            }
+        }
+
+        if (switchEnabled)
+        {
+            // TODO set random speed?
+            player->Play();
+        }
+        else
+        {
+            player->Pause();
+        }
     }
   
     return 0;

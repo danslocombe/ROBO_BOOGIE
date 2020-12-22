@@ -5,20 +5,25 @@
     #include "DevIO.h"
 #endif
 
-void RoutineSet::Run()
+Routine* RoutineSet::GetRoutineIncrement()
 {
-    const auto& routine = m_routines[m_currentRule];
-    std::cout << "Running routine: " << routine.Name << std::endl;
-    routine.Run();
+    auto* routine = &m_routines[m_currentRule];
+    routine->CurrentMove = 0;
     m_currentRule = (m_currentRule + 1) % m_routines.size();
+    return routine;
 }
 
-void Routine::Run() const
+bool Routine::Run()
 {
-    for (const auto& move : Moves)
+    if (this->CurrentMove < this->Moves.size())
     {
+        const auto& move = this->Moves[this->CurrentMove];
         move.Run();
+        this->CurrentMove++;
+        return true;
     }
+
+    return false;
 }
 
 void Move::Run() const
@@ -53,10 +58,9 @@ void Delay::Run() const
 
 void MotorMove::Run() const
 {
-    const int id = this->Motor == MotorType::Arm ? 0 : 1;
-    ioPwmWrite(id, this->Pos);
+    ioPwmWrite(this->Motor, this->Pos);
     const int delayMs = (int)(500.0 + (1.0 - this->Vel) * 500.0);
     ioDelay(delayMs);
-    ioPwmStop(id);
+    ioPwmStop(this->Motor);
 }
 

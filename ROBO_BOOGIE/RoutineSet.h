@@ -23,6 +23,18 @@ enum class MotorType
     Arm,
 };
 
+inline const char* MotorTypeString(MotorType id)
+{
+    if (id == MotorType::Lid)
+    {
+        return "LID";
+    }
+    else
+    {
+        return "ARM";
+    }
+}
+
 struct MotorMove
 {
     MotorType Motor;
@@ -42,8 +54,9 @@ struct Routine
 {
     std::string Name;
     std::vector<Move> Moves;
+    int CurrentMove = 0;
 
-    void Run() const;
+    bool Run();
 };
 
 class RoutineSet
@@ -55,7 +68,7 @@ public:
     RoutineSet(std::vector<Routine> routines) : m_routines(std::move(routines))
     {}
 
-    void Run();
+    Routine* GetRoutineIncrement();
 };
 
 class RoutineSetParser
