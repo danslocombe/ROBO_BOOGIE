@@ -10,6 +10,7 @@
 #include "AudioPlayer.h"
 #include "RoutineSet.h"
 #include "StringCompat.h"
+#include "FMSynth.h"
 
 #ifdef PI 
     #include "PiIO.h"
@@ -18,6 +19,14 @@ bool switchEnabled;
     #include "DevIO.h"
 #endif
 
+void assert_result(bool res, const std::string& str)
+{
+    if (!res)
+    {
+        std::cerr << str << std::endl;
+        exit(1);
+    }
+}
 
 void assert_result(FMOD_RESULT res, const std::string& str)
 {
@@ -42,7 +51,6 @@ FMOD::System *sys = nullptr;
 unsigned int version;
 FMOD::Sound* sound1 = nullptr;
 FMOD::Channel* channel = nullptr;
-AudioPlayer* player = nullptr;
 
 void loop()
 {
@@ -70,28 +78,49 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
     result = sys->init(32, FMOD_INIT_NORMAL, nullptr);
     assert_result(result);
   
-    std::cout << "Creating sound" << std::endl;
+    std::cout << "Creating sound " << soundPath << std::endl;
 
     result = sys->createSound(soundPath.c_str(), FMOD_DEFAULT, 0, &sound1);
     assert_result(result);
-  
     std::cout << "Loading Ok!" << std::endl;
+
+    FMOD::Sound *snore;
+    result = sys->createSound("C:\\users\\daslocom\\Music\\snore.wav", FMOD_LOOP_NORMAL, 0, &snore);
+    assert_result(result);
+    FMOD::Channel *snoreChannel;
+    result = sys->playSound(snore, 0, false, &snoreChannel);
+    assert_result(result);
 
     const bool paused = true;
     result = sys->playSound(sound1, 0, paused, &channel);
     assert_result(result);
 
-    player = new AudioPlayer(sound1, channel);
+    FMSynthDSP synth;
     std::string error;
-    result = player->Register(sys, error);
+    assert_result(synth.Register(sys, error), error);
+    synth.GetConfigMut().Wave = WaveType::SIN;
+    synth.GetConfigMut().Freq = 0.5;
+    synth.GetConfigMut().AmpASDR.Attack = 3000.0;
+    synth.GetConfigMut().AmpASDR.Decay = 1.0;
+    synth.GetConfigMut().AmpASDR.Sustain = 1.0;
+    synth.GetConfigMut().AmpASDR.Release = 3000.0;
+    synth.SetEnabled(true);
+
+    AudioPlayer player(sound1, channel);
+    result = player.Register(sys, channel, error);
     assert_result(result);
 
     bool toggle = true;
     Routine* routine = nullptr;
     bool switchEnabled = false;
 
+    bool x = false;
+
     for (;;)
     {
+        synth.SetKeydown(x);
+        x = !x;
+
         if (routine != nullptr && routine->Run())
         {
             switchEnabled = ioRead();
@@ -113,11 +142,11 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
         if (switchEnabled)
         {
             // TODO set random speed?
-            player->Play();
+            player.Play();
         }
         else
         {
-            player->Pause();
+            player.Pause();
         }
     }
   
