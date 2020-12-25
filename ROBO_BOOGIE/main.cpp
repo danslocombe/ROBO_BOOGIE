@@ -186,6 +186,7 @@ ConstantObj parseVoiceConfig()
     std::vector<std::string> lines;
     while (std::getline(file, line))
     {
+        trimEnd(line);
         lines.emplace_back(line);
     }
 

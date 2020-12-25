@@ -1,4 +1,5 @@
 #include "RoutineSet.h"
+#include <iostream>
 #ifdef PI 
     #include "PiIO.h"
 #else
@@ -71,12 +72,13 @@ void MotorMove::Run() const
 
 void Dialogue::Run(SpeechSynthDSP& synth, const ConstantObj& config) const
 {
+    std::cout << "Talking: " << this->Text << ", voice: " << this->Voice << std::endl;
     synth.Talk(this->Text);
     synth.SetSpeaker(this->Voice);
     while (synth.IsTalking())
     {
         synth.Tick(config);
-        ioDelay(1);
+        ioDelay(2);
     }
 }
 
