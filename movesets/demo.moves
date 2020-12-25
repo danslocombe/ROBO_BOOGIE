@@ -6,9 +6,18 @@
 #delay 3s
 
 ####
+routine standard
+####
+delay (1s, 20s)
+lid 1 med
+arm 1 1.75
+arm 0 med
+dialogue (hello there little child) basic_voice
+lid 0 med
+
+####
 routine peek
 ####
-dialogue (hello there little child) basic_voice
 delay (1s, 2s)
 lid 0.4 fast
 delay (2s, 3s)
@@ -41,15 +50,6 @@ lid 0.8 slow
 delay (200ms, 500ms)
 lid 1 slow
 delay (1s, 2s)
-arm 1 1.75
-arm 0 med
-lid 0 med
-
-####
-routine standard
-####
-delay (1s, 20s)
-lid 1 med
 arm 1 1.75
 arm 0 med
 lid 0 med

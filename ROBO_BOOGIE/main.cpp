@@ -210,7 +210,8 @@ int main(int argc, char** argv)
 #ifdef PI
     std::string soundPath("/home/pi/boom.wav");
 #else
-    std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
+    //std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
+    std::string soundPath("C:\\users\\daslocom\\music\\laura.wav");
 #endif
 
     if (argc > 1)
