@@ -220,7 +220,7 @@ RoutineSet parse()
 int main(int argc, char** argv)
 {
 #ifdef PI
-    std::string soundPath("/home/pi/boom.wav");
+    std::string soundPath("/home/pi/pompeii.wav");
 #else
     //std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
     std::string soundPath("C:\\users\\daslocom\\music\\laura.wav");
