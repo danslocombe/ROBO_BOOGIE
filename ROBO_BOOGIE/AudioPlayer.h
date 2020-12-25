@@ -20,7 +20,7 @@ public:
     AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel);
     //~AudioPlayer();
 
-    FMOD_RESULT Register(FMOD::System* sys, FMOD::Channel* channel, std::string& error);
+    FMOD_RESULT Register(FMOD::System* sys, FMOD::ChannelGroup* channel, std::string& error);
 
     int GetOffset() const
     {

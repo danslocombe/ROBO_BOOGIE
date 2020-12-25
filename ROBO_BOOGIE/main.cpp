@@ -10,7 +10,7 @@
 #include "AudioPlayer.h"
 #include "RoutineSet.h"
 #include "StringCompat.h"
-#include "FMSynth.h"
+#include "SpeechSynth.h"
 
 #ifdef PI 
     #include "PiIO.h"
@@ -58,7 +58,7 @@ void loop()
     assert_result(result);
 }
 
-int main_audio(RoutineSet routineSet, const std::string& soundPath)
+int main_audio(RoutineSet routineSet, const ConstantObj& voiceConfig, const std::string& soundPath)
 {
     ioInit();
 
@@ -91,10 +91,15 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
     result = sys->playSound(snore, 0, false, &snoreChannel);
     assert_result(result);
 
-    const bool paused = true;
-    result = sys->playSound(sound1, 0, paused, &channel);
+    FMOD::ChannelGroup* channelGroup;
+    result = sys->createChannelGroup("music", &channelGroup);
     assert_result(result);
 
+    const bool paused = true;
+    result = sys->playSound(sound1, channelGroup, paused, &channel);
+    assert_result(result);
+
+    /*
     FMSynthDSP synth;
     std::string error;
     assert_result(synth.Register(sys, error), error);
@@ -105,9 +110,14 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
     synth.GetConfigMut().AmpASDR.Sustain = 1.0;
     synth.GetConfigMut().AmpASDR.Release = 3000.0;
     synth.SetEnabled(true);
+    */
+
+    SpeechSynthDSP speechSynth;
+    std::string error;
+    assert_result(speechSynth.Register(sys, error), error);
 
     AudioPlayer player(sound1, channel);
-    result = player.Register(sys, channel, error);
+    result = player.Register(sys, channelGroup, error);
     assert_result(result);
 
     bool toggle = true;
@@ -115,13 +125,13 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
     bool switchEnabled = false;
 
     bool x = false;
+    bool snoring = true;
 
+    // TODO start snoring again
+    //const int snoreBuildup = 20;
     for (;;)
     {
-        synth.SetKeydown(x);
-        x = !x;
-
-        if (routine != nullptr && routine->Run())
+        if (routine != nullptr && routine->Run(speechSynth, voiceConfig))
         {
             switchEnabled = ioRead();
         }
@@ -134,6 +144,7 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
 
             if (switchEnabled)
             {
+                snoring = false;
                 routine = routineSet.GetRoutineIncrement();
                 std::cout << "Loaded routine: " << routine->Name << std::endl;
             }
@@ -148,9 +159,26 @@ int main_audio(RoutineSet routineSet, const std::string& soundPath)
         {
             player.Pause();
         }
+
+        snoreChannel->setPaused(!snoring);
     }
   
     return 0;
+}
+
+ConstantObj parseVoiceConfig()
+{
+    std::string path("C:\\Users\\daslocom\\source\\repos\\ROBO_BOOGIE\\movesets\\voices.config");
+    std::ifstream file(path);
+
+    std::string line;
+    std::vector<std::string> lines;
+    while (std::getline(file, line))
+    {
+        lines.emplace_back(line);
+    }
+
+    return ParseValues(lines);
 }
 
 RoutineSet parse()
@@ -191,5 +219,6 @@ int main(int argc, char** argv)
     }
 
     auto routineSet = parse();
-    return main_audio(routineSet, soundPath);
+    const auto config = parseVoiceConfig();
+    return main_audio(routineSet, config, soundPath);
 }

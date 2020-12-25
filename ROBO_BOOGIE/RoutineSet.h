@@ -3,6 +3,8 @@
 #include <string>
 #include <variant>
 #include <optional>
+#include "ConstantObj.h"
+#include "SpeechSynth.h"
 
 struct RandRange
 {
@@ -44,10 +46,17 @@ struct MotorMove
     void Run() const;
 };
 
+struct Dialogue
+{
+    std::string Text;
+    std::string Voice;
+    void Run(SpeechSynthDSP& synth, const ConstantObj& config) const;
+};
+
 struct Move
 {
-    std::variant<Delay, MotorMove> _Move;
-    void Run() const;
+    std::variant<Delay, MotorMove, Dialogue> _Move;
+    void Run(SpeechSynthDSP& synth, const ConstantObj& config) const;
 };
 
 struct Routine
@@ -56,7 +65,7 @@ struct Routine
     std::vector<Move> Moves;
     int CurrentMove = 0;
 
-    bool Run();
+    bool Run(SpeechSynthDSP& synth, const ConstantObj& config);
 };
 
 class RoutineSet

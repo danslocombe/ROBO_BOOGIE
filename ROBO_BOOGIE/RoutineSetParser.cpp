@@ -155,6 +155,7 @@ std::optional<Move> ParseMove(const std::string& line)
     constexpr const char* LID("lid");
     constexpr const char* DELAY("delay");
     constexpr const char* ARM("arm");
+    constexpr const char* DIALOGUE("dialogue");
 
     const auto& command = splits[0];
     if (command == DELAY)
@@ -207,6 +208,17 @@ std::optional<Move> ParseMove(const std::string& line)
         move.Pos = pos;
         move.Vel = vel;
         return { Move { std::move(move) } };
+    }
+    else if (command == DIALOGUE)
+    {
+        if (splits.size() == 3)
+        {
+            Dialogue dialogue;
+            dialogue.Text = splits[1];
+            dialogue.Voice = splits[2];
+
+            return { Move {std::move(dialogue)} };
+        }
     }
 
     std::cout << "Could not parse line '"  << line << "'" << std::endl;

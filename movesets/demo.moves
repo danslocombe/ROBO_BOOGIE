@@ -8,6 +8,7 @@
 ####
 routine peek
 ####
+dialogue (hello there little child) basic_voice
 delay (1s, 2s)
 lid 0.4 fast
 delay (2s, 3s)
