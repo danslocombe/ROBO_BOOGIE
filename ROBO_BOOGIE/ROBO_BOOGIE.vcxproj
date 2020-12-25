@@ -146,10 +146,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AudioPlayer.cpp" />
+    <ClCompile Include="ConstantObj.cpp" />
+    <ClCompile Include="FMSynth.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RoutineSet.cpp" />
     <ClCompile Include="RoutineSetParser.cpp" />
     <ClCompile Include="RingBuffer.cpp" />
+    <ClCompile Include="SpeechSynth.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fmod.dll">
@@ -158,11 +161,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioPlayer.h" />
+    <ClInclude Include="AudioProcessing.h" />
+    <ClInclude Include="ConstantObj.h" />
     <ClInclude Include="DevIO.h" />
+    <ClInclude Include="FMSynth.h" />
     <ClInclude Include="RoutineSet.h" />
     <ClInclude Include="PiIO.h" />
     <ClInclude Include="RingBuffer.h" />
+    <ClInclude Include="SpeechSynth.h" />
     <ClInclude Include="StringCompat.h" />
+    <ClInclude Include="StringHelpers.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

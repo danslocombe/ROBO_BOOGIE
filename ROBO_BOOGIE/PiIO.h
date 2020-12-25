@@ -10,7 +10,6 @@ constexpr int pinLid = 23;
 
 inline void ioDelay(int x)
 {
-    std::cout << "delay: " << x << std::endl;
     delay(x);
 }
 

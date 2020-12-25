@@ -13,12 +13,12 @@ Routine* RoutineSet::GetRoutineIncrement()
     return routine;
 }
 
-bool Routine::Run()
+bool Routine::Run(SpeechSynthDSP& synth, const ConstantObj& voiceConfig)
 {
     if (this->CurrentMove < this->Moves.size())
     {
         const auto& move = this->Moves[this->CurrentMove];
-        move.Run();
+        move.Run(synth, voiceConfig);
         this->CurrentMove++;
         return true;
     }
@@ -26,17 +26,22 @@ bool Routine::Run()
     return false;
 }
 
-void Move::Run() const
+void Move::Run(SpeechSynthDSP& synth, const ConstantObj& voiceConfig) const
 {
     if (std::holds_alternative<Delay>(this->_Move))
     {
         const auto& delay = std::get<Delay>(this->_Move);
         delay.Run();
     }
-    else
+    else if (std::holds_alternative<MotorMove>(this->_Move))
     {
         const auto& motorMove = std::get<MotorMove>(this->_Move);
         motorMove.Run();
+    }
+    else
+    {
+        const auto& dialogue = std::get<Dialogue>(this->_Move);
+        dialogue.Run(synth, voiceConfig);
     }
 }
 
@@ -62,5 +67,16 @@ void MotorMove::Run() const
     const int delayMs = (int)(750.0 / this->Vel);
     ioDelay(delayMs);
     ioPwmStop(this->Motor);
+}
+
+void Dialogue::Run(SpeechSynthDSP& synth, const ConstantObj& config) const
+{
+    synth.Talk(this->Text);
+    synth.SetSpeaker(this->Voice);
+    while (synth.IsTalking())
+    {
+        synth.Tick(config);
+        ioDelay(1);
+    }
 }
 

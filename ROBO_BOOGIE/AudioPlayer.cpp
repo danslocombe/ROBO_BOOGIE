@@ -37,7 +37,7 @@ void AudioPlayer::Pause()
     m_channel->setPaused(true);
 }
 
-FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, std::string& error)
+FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, FMOD::ChannelGroup* channelGroup, std::string& error)
 {
     m_sys = sys;
 
@@ -48,6 +48,7 @@ FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, std::string& error)
         return result;
     }
 
+    /*
     FMOD::ChannelGroup* masterGroup = nullptr;
     result = sys->getMasterChannelGroup(&masterGroup);
 
@@ -56,9 +57,10 @@ FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, std::string& error)
         error = "Could not get master channel";
         return result;
     }
+    */
 
     // Push to end of dsp list.
-    result = masterGroup->addDSP(FMOD_CHANNELCONTROL_DSP_TAIL, m_dsp);
+    result = channelGroup->addDSP(FMOD_CHANNELCONTROL_DSP_TAIL, m_dsp);
     if (result != FMOD_OK)
     {
         error = "Could not add dsp";

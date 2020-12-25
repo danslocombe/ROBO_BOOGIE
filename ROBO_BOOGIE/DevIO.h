@@ -12,7 +12,7 @@ inline void ioInit()
 
 inline void ioDelay(int x)
 {
-    std::cout << "delay: " << x << std::endl;
+    //std::cout << "delay: " << x << std::endl;
     Sleep(x);
 }
 
