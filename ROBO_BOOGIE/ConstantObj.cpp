@@ -133,14 +133,6 @@ Constant ParseConstant(const std::string& str)
         return { false };
     }
 
-    //auto[p, ec] = std::from_chars(str.data(), str.data() + str.size(), doubleVal);
-    /*
-    if (ec == std::errc())
-    {
-        return { doubleVal };
-    }
-    */
-
     char* end;
     const double doubleVal = strtod(str.c_str(), &end);
     if (*end == 0 || isspace(*end))

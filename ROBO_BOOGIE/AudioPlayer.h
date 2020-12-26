@@ -18,7 +18,6 @@ private:
     
 public:
     AudioPlayer(FMOD::Sound* sound, FMOD::Channel* channel);
-    //~AudioPlayer();
 
     FMOD_RESULT Register(FMOD::System* sys, FMOD::ChannelGroup* channel, std::string& error);
 

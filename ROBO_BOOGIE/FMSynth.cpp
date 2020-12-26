@@ -81,7 +81,7 @@ void FMSynthDSP::FillBuffer(std::vector<float>& buffer)
     }
 
     const double baseSynthVol = 0.2;
-    const double freqMult = 0.03 * m_config.Freq;// Constants::Globals.GetDouble("speech_synth_freq_mult");
+    const double freqMult = 0.03 * m_config.Freq;
 
     double pulseWidth = m_config.PulseWidth;
 
@@ -133,21 +133,11 @@ FMOD_RESULT FMSynthDSP::Callback(
     int* outChannels)
 {
     const double synthVol = 0.2;
-    const double freqMult = 0.03;// Constants::Globals.GetDouble("speech_synth_freq_mult");
-    //const double freqLfoSpeed = Constants::Globals.GetDouble("speech_synth_freq_lfo_speed");
-    //const double freqLfoDepth = Constants::Globals.GetDouble("speech_synth_freq_lfo_depth");
-
-    //const double synthVol = Constants::Globals.GetDouble("speech_synth_vol");
-    //const auto shape = Constants::Globals.GetString("speech_synth_shape");
-    //const double pulseWidthLfoSpeed = Constants::Globals.GetDouble("speech_synth_pulse_width_lfo_speed");
-    //const double pulseWidthLfoDepth = Constants::Globals.GetDouble("speech_synth_pulse_width_lfo_depth");
-
+    const double freqMult = 0.03;
 
     std::vector<float> oscBuffer;
     oscBuffer.resize(length);
     this->FillBuffer(oscBuffer);
-
-    //oscBuffer = m_lowPass.Run(oscBuffer, m_config.LowPassAlpha);
 
     for (uint32_t samp = 0; samp < length; samp++) 
     {
@@ -155,23 +145,7 @@ FMOD_RESULT FMSynthDSP::Callback(
         {
 			const uint32_t offset = (samp * *outChannels) + chan;
             float value = inbuffer[offset];
-
-            {
-                value += oscBuffer[samp];
-
-                /*
-                const double samp = (m_pitch * freqMult * (double)m_curSample) 
-                    + freqLfoDepth * sin((double)m_curSample * m_pitch * freqLfoSpeed);
-
-
-                //if (samp == 0)
-                {
-                    //m_freqBuf.Push(100.0 * frequency);
-                }
-                */
-
-            }
-
+            value += oscBuffer[samp];
 			outbuffer[offset] = value;
         }
     } 

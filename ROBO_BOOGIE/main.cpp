@@ -14,6 +14,7 @@
 
 #ifdef PI 
     #include "PiIO.h"
+    #include <time.h>
 #else
 bool switchEnabled;
     #include "DevIO.h"
@@ -47,24 +48,15 @@ void assert_result(FMOD_RESULT res)
     }
 }
 
-FMOD::System *sys = nullptr;
-unsigned int version;
-FMOD::Sound* sound1 = nullptr;
-FMOD::Channel* channel = nullptr;
-
-void loop()
-{
-    const auto result = sys->update();
-    assert_result(result);
-}
-
-int main_audio(RoutineSet routineSet, const ConstantObj& voiceConfig, const std::string& soundPath)
+int Run(RoutineSet routineSet, const ConstantObj& voiceConfig, const std::string& soundPath)
 {
     ioInit();
 
+    FMOD::System *sys = nullptr;
     auto result = FMOD::System_Create(&sys);
     assert_result(result);
   
+    unsigned int version;
     result = sys->getVersion(&version);
     assert_result(result);
   
@@ -80,7 +72,8 @@ int main_audio(RoutineSet routineSet, const ConstantObj& voiceConfig, const std:
   
     std::cout << "Creating sound " << soundPath << std::endl;
 
-    result = sys->createSound(soundPath.c_str(), FMOD_LOOP_NORMAL, 0, &sound1);
+    FMOD::Sound* music = nullptr;
+    result = sys->createSound(soundPath.c_str(), FMOD_LOOP_NORMAL, 0, &music);
     assert_result(result);
     std::cout << "Loading Music" << std::endl;
 
@@ -103,27 +96,15 @@ int main_audio(RoutineSet routineSet, const ConstantObj& voiceConfig, const std:
     assert_result(result);
 
     const bool paused = true;
-    result = sys->playSound(sound1, channelGroup, paused, &channel);
+    FMOD::Channel* channel = nullptr;
+    result = sys->playSound(music, channelGroup, paused, &channel);
     assert_result(result);
-
-    /*
-    FMSynthDSP synth;
-    std::string error;
-    assert_result(synth.Register(sys, error), error);
-    synth.GetConfigMut().Wave = WaveType::SIN;
-    synth.GetConfigMut().Freq = 0.5;
-    synth.GetConfigMut().AmpASDR.Attack = 3000.0;
-    synth.GetConfigMut().AmpASDR.Decay = 1.0;
-    synth.GetConfigMut().AmpASDR.Sustain = 1.0;
-    synth.GetConfigMut().AmpASDR.Release = 3000.0;
-    synth.SetEnabled(true);
-    */
 
     SpeechSynthDSP speechSynth;
     std::string error;
     assert_result(speechSynth.Register(sys, error), error);
 
-    AudioPlayer player(sound1, channel);
+    AudioPlayer player(music, channel);
     result = player.Register(sys, channelGroup, error);
     assert_result(result);
 
@@ -173,7 +154,7 @@ int main_audio(RoutineSet routineSet, const ConstantObj& voiceConfig, const std:
     return 0;
 }
 
-ConstantObj parseVoiceConfig()
+ConstantObj ParseVoiceConfig()
 {
 #ifdef PI
     std::string path("/home/pi/ROBO_BOOGIE/movesets/voices.config");
@@ -193,7 +174,7 @@ ConstantObj parseVoiceConfig()
     return ParseValues(lines);
 }
 
-RoutineSet parse()
+RoutineSet ParseRoutineSet()
 {
 #ifdef PI
     std::string path("/home/pi/ROBO_BOOGIE/movesets/demo.moves");
@@ -217,21 +198,44 @@ RoutineSet parse()
     return parser.ParseFile(lines);
 }
 
-int main(int argc, char** argv)
+std::string RandomSoundPath()
 {
 #ifdef PI
-    std::string soundPath("/home/pi/pompeii.wav");
+    const std::string basePath("/home/pi/");
+    const std::vector<std::string> names
+    {
+        "laura.wav",
+        "pompeii.wav",
+    };
 #else
-    //std::string soundPath("C:\\users\\daslocom\\music\\crunch.wav");
-    std::string soundPath("C:\\users\\daslocom\\music\\laura.wav");
+    const std::string basePath("C:\\users\\daslocom\\music\\");
+    const std::vector<std::string> names
+    {
+        "laura.wav",
+        "pompeii.wav",
+        "crunch.wav",
+    };
 #endif
+
+    srand(time(NULL));
+    const int index = rand() % names.size();
+    return basePath + names[index];
+}
+
+int main(int argc, char** argv)
+{
+    std::string soundPath;
 
     if (argc > 1)
     {
         soundPath = std::string(argv[1]);
     }
+    else
+    {
+        soundPath = RandomSoundPath();
+    }
 
-    auto routineSet = parse();
-    const auto config = parseVoiceConfig();
-    return main_audio(routineSet, config, soundPath);
+    auto routineSet = ParseRoutineSet();
+    const auto config = ParseVoiceConfig();
+    return Run(routineSet, config, soundPath);
 }

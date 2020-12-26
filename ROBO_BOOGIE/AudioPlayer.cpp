@@ -48,17 +48,6 @@ FMOD_RESULT AudioPlayer::Register(FMOD::System* sys, FMOD::ChannelGroup* channel
         return result;
     }
 
-    /*
-    FMOD::ChannelGroup* masterGroup = nullptr;
-    result = sys->getMasterChannelGroup(&masterGroup);
-
-    if (result != FMOD_OK && masterGroup != nullptr)
-    {
-        error = "Could not get master channel";
-        return result;
-    }
-    */
-
     // Push to end of dsp list.
     result = channelGroup->addDSP(FMOD_CHANNELCONTROL_DSP_TAIL, m_dsp);
     if (result != FMOD_OK)
@@ -117,7 +106,6 @@ FMOD_RESULT AudioPlayer::Callback(
             f_offset = 0.0;
         }
 
-        // Do we need to interpolate?
         const float x = m_ringBuffer.ReadOffset((int)f_offset);
         for (int chan = 0; chan < *outChannels; chan++)
         {
